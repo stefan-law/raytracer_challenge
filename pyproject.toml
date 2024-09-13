@@ -1,0 +1,11 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "raytracer_challenge"
+authors = [{name = "Stefan Law", email = "stefan.law@colorado.edu"}]
+dynamic = ["version", "description"]
+
+[project.urls]
+Home = "https://github.com/stefan-law"
