@@ -1,5 +1,5 @@
 """TODO"""
-from ..src import ray_matrix
+from ..src import ray_matrix, ray_ds
 
 def test_matrix_gen4by4():
     """"""
@@ -96,3 +96,174 @@ def test_matrix_eq():
     b[3,3] = 2
 
     assert a == b
+    
+def test_matrix_mul():
+    """TODO"""
+    # Initialize two matrices
+    a = ray_matrix.Matrix(4,4)
+    a[0,0] = 1
+    a[0,1] = 2
+    a[0,2] = 3
+    a[0,3] = 4
+    a[1,0] = 5
+    a[1,1] = 6
+    a[1,2] = 7
+    a[1,3] = 8
+    a[2,0] = 9
+    a[2,1] = 8
+    a[2,2] = 7
+    a[2,3] = 6
+    a[3,0] = 5
+    a[3,1] = 4
+    a[3,2] = 3
+    a[3,3] = 2
+    b = ray_matrix.Matrix(4,4)
+    b[0,0] = -2
+    b[0,1] = 1
+    b[0,2] = 2
+    b[0,3] = 3
+    b[1,0] = 3
+    b[1,1] = 2
+    b[1,2] = 1
+    b[1,3] = -1
+    b[2,0] = 4
+    b[2,1] = 3
+    b[2,2] = 6
+    b[2,3] = 5
+    b[3,0] = 1
+    b[3,1] = 2
+    b[3,2] = 7
+    b[3,3] = 8
+    
+    # Initialize reference matrix
+    t = ray_matrix.Matrix(4,4)
+    t[0,0] = 20
+    t[0,1] = 22
+    t[0,2] = 50
+    t[0,3] = 48
+    t[1,0] = 44
+    t[1,1] = 54
+    t[1,2] = 114
+    t[1,3] = 108
+    t[2,0] = 40
+    t[2,1] = 58
+    t[2,2] = 110
+    t[2,3] = 102
+    t[3,0] = 16
+    t[3,1] = 26
+    t[3,2] = 46
+    t[3,3] = 42
+    
+    #Multiply AB and test equality with reference matrix
+    test = a*b
+    assert test == t
+    
+def test_matrix_vector_mul():
+    """TODO"""
+    # Initialize one matrix
+    a = ray_matrix.Matrix(4,4)
+    a[0,0] = 1
+    a[0,1] = 2
+    a[0,2] = 3
+    a[0,3] = 4
+    a[1,0] = 2
+    a[1,1] = 4
+    a[1,2] = 4
+    a[1,3] = 2
+    a[2,0] = 8
+    a[2,1] = 6
+    a[2,2] = 4
+    a[2,3] = 1
+    a[3,0] = 0
+    a[3,1] = 0
+    a[3,2] = 0
+    a[3,3] = 1
+    
+    b = ray_ds.RayTuple(1, 2, 3, 1)
+    
+    t = ray_ds.RayTuple(18, 24, 33, 1)
+    assert a * b == t
+    
+def test_identity_matrix():
+    """Multiplying a matrix by and identity matrix returns the same matrix"""
+    # Initialize one matrix
+    a = ray_matrix.Matrix(4,4)
+    a[0,0] = 0
+    a[0,1] = 1
+    a[0,2] = 2
+    a[0,3] = 4
+    a[1,0] = 1
+    a[1,1] = 2
+    a[1,2] = 4
+    a[1,3] = 8
+    a[2,0] = 2
+    a[2,1] = 4
+    a[2,2] = 8
+    a[2,3] = 16
+    a[3,0] = 4
+    a[3,1] = 8
+    a[3,2] = 16
+    a[3,3] = 32
+    
+    # Initialize an identity matrix for 4x4 matrix
+    i = ray_matrix.Matrix(4,4)
+    i[0,0] = 1
+    i[0,1] = 0
+    i[0,2] = 0
+    i[0,3] = 0
+    i[1,0] = 0
+    i[1,1] = 1
+    i[1,2] = 0
+    i[1,3] = 0
+    i[2,0] = 0
+    i[2,1] = 0
+    i[2,2] = 1
+    i[2,3] = 0
+    i[3,0] = 0
+    i[3,1] = 0
+    i[3,2] = 0
+    i[3,3] = 1
+    
+    assert a * i == a
+    
+def test_transpose():
+    """Test transpose of a matrix (swapping rows and columns)"""
+    # Initialize test matrix
+    a = ray_matrix.Matrix(4,4)
+    a[0,0] = 0
+    a[0,1] = 9
+    a[0,2] = 3
+    a[0,3] = 0
+    a[1,0] = 9
+    a[1,1] = 8
+    a[1,2] = 0
+    a[1,3] = 8
+    a[2,0] = 1
+    a[2,1] = 8
+    a[2,2] = 5
+    a[2,3] = 3
+    a[3,0] = 0
+    a[3,1] = 0
+    a[3,2] = 5
+    a[3,3] = 8
+    
+    # Initialize comparison matrix
+    t = ray_matrix.Matrix(4,4)
+    t[0,0] = 0
+    t[0,1] = 9
+    t[0,2] = 1
+    t[0,3] = 0
+    t[1,0] = 9
+    t[1,1] = 8
+    t[1,2] = 8
+    t[1,3] = 0
+    t[2,0] = 3
+    t[2,1] = 0
+    t[2,2] = 5
+    t[2,3] = 5
+    t[3,0] = 0
+    t[3,1] = 8
+    t[3,2] = 3
+    t[3,3] = 8
+    
+    assert a.transpose() == t    
