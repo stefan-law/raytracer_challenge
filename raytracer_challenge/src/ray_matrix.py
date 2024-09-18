@@ -74,6 +74,40 @@ class Matrix:
             raise MatrixError("Must be 2x2 Matrix")
         
         return self.matrix[0][0] * self.matrix[1][1] - self.matrix[0][1] * self.matrix[1][0]
+    
+    def submatrix(self, row: int, column: int) -> Matrix:
+        """Create a submatrix by removing one row and one column at argument indices"""
+        out_matrix = Matrix(self.m - 1, self.n - 1)
+        
+        for m in range(self.m):
+            if m == row:
+                continue
+            for n in range(self.n):
+                if n == column:
+                    continue
+                
+                row_index = m if m <= row else m-1
+                column_index = n if n <= column else n-1
+                
+                out_matrix[row_index, column_index] = self.matrix[m][n]
+                
+        return out_matrix
+    
+    def minor(self, row: int, column: int) -> float:
+        """Calculate the determinant of the submatrix at argument indices"""
+        sub = self.submatrix(row, column)
+        det = sub.determinant()
+        
+        return det
+    
+    def cofactor(self, row: int, column: int) -> float:
+        """
+        Calculate the cofactor of the matrix at argument indices
+        How is cofactor determined?
+        """
+        cof =  self.minor(row, column) if (row + column) % 2 == 0 else -(self.minor(row,column))
+        return cof
+        
         
 
 class MatrixError(Exception):

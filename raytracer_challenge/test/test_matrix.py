@@ -275,4 +275,138 @@ def test_determinant():
     a[0,1] = 5
     a[1,0] = -3
     a[1,1] = 2
-    assert a.determinant() == 17    
+    assert a.determinant() == 17
+    
+def test_submatrix_1():
+    """Test changing 3x3 matrix to a 2x2 by removing row 0 and column 2"""
+    a = ray_matrix.Matrix(3,3)
+    a[0,0] = 1
+    a[0,1] = 5
+    a[0,2] = 0
+    a[1,0] = -3
+    a[1,1] = 2
+    a[1,2] = 7
+    a[2,0] = 0
+    a[2,1] = 6
+    a[2,2] = -3
+    
+    t = ray_matrix.Matrix(2,2)
+    t[0,0] = -3
+    t[0,1] = 2
+    t[1,0] = 0
+    t[1,1] = 6
+    
+    assert a.submatrix(0, 2) == t
+    
+def test_submatrix_2():
+    """Test changing 4x4 matrix to a 3x3 by removing row 2 and column 1"""
+    a = ray_matrix.Matrix(4,4)
+    a[0,0] = -6
+    a[0,1] = 1
+    a[0,2] = 1
+    a[0,3] = 6
+    a[1,0] = -8
+    a[1,1] = 5
+    a[1,2] = 8
+    a[1,3] = 6
+    a[2,0] = -1
+    a[2,1] = 0
+    a[2,2] = 8
+    a[2,3] = 2
+    a[3,0] = -7
+    a[3,1] = 1
+    a[3,2] = -1
+    a[3,3] = 1
+    
+    t = ray_matrix.Matrix(3,3)
+    t[0,0] = -6
+    t[0,1] = 1
+    t[0,2] = 6
+    t[1,0] = -8
+    t[1,1] = 8
+    t[1,2] = 6
+    t[2,0] = -7
+    t[2,1] = -1
+    t[2,2] = 1
+    
+    assert a.submatrix(2, 1) == t
+
+def test_minor():
+    """Test minor function with a 3x3 matrix"""
+    a = ray_matrix.Matrix(3,3)
+    a[0,0] = 3
+    a[0,1] = 5
+    a[0,2] = 0
+    a[1,0] = 2
+    a[1,1] = -1
+    a[1,2] = -7
+    a[2,0] = 6
+    a[2,1] = -1
+    a[2,2] = 5
+    
+    b = a.submatrix(1,0)
+    
+    assert b.determinant() == 25
+    assert a.minor(1,0) == 25
+
+def test_cofactor():
+    """Test cofactor function  with a 3x3 matrix"""
+    a = ray_matrix.Matrix(3,3)
+    a[0,0] = 3
+    a[0,1] = 5
+    a[0,2] = 0
+    a[1,0] = 2
+    a[1,1] = -1
+    a[1,2] = -7
+    a[2,0] = 6
+    a[2,1] = -1
+    a[2,2] = 5
+    
+    assert a.minor(0,0) == -12
+    assert a.cofactor(0,0) == -12
+    assert a.minor(1,0) == 25
+    assert a.cofactor(1,0) == -25
+
+def test_determinant_3x3():
+    """Test determinant and cofactor functions with a 3x3 matrix"""
+    a = ray_matrix.Matrix(3,3)
+    a[0,0] = 1
+    a[0,1] = 2
+    a[0,2] = 6
+    a[1,0] = -5
+    a[1,1] = 8
+    a[1,2] = -4
+    a[2,0] = 2
+    a[2,1] = 6
+    a[2,2] = 4
+    
+    assert a.cofactor(0,0) == 56
+    assert a.cofactor(0,1) == 12
+    assert a.cofactor(0,2) == -46
+    assert a.determinant() == -196
+    
+def test_determinant_4x4():
+    """Test determinant and cofactor functions with a 4x4 matrix"""
+    a = ray_matrix.Matrix(4,4)
+    a[0,0] = -2
+    a[0,1] = -8
+    a[0,2] = 3
+    a[0,3] = 5
+    a[1,0] = -3
+    a[1,1] = 1
+    a[1,2] = 7
+    a[1,3] = 3
+    a[2,0] = 1
+    a[2,1] = 2
+    a[2,2] = -9
+    a[2,3] = 6
+    a[3,0] = -6
+    a[3,1] = 7
+    a[3,2] = 7
+    a[3,3] = -9
+    
+    assert a.cofactor(0,0) == 690
+    assert a.cofactor(0,1) == 447
+    assert a.cofactor(0,2) == 210
+    assert a.cofactor(0,3) == 51
+    assert a.determinant() == -4071
