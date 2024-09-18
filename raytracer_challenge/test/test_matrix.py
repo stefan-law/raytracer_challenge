@@ -266,4 +266,13 @@ def test_transpose():
     t[3,2] = 3
     t[3,3] = 8
     
-    assert a.transpose() == t    
+    assert a.transpose() == t
+    
+def test_determinant():
+    """Test determinant function for 2x2 matrices"""
+    a = ray_matrix.Matrix(2,2)
+    a[0,0] = 1
+    a[0,1] = 5
+    a[1,0] = -3
+    a[1,1] = 2
+    assert a.determinant() == 17    

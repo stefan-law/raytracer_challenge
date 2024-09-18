@@ -67,5 +67,17 @@ class Matrix:
                 out_matrix[n,m] = self.matrix[m][n]
         
         return out_matrix
+    
+    def determinant(self) -> float:
+        """Calculates the determinant of a 2x2 matrix"""
+        if self.m != 2 or self.n != 2:
+            raise MatrixError("Must be 2x2 Matrix")
+        
+        return self.matrix[0][0] * self.matrix[1][1] - self.matrix[0][1] * self.matrix[1][0]
+        
+
+class MatrixError(Exception):
+    """Custom exception for matrices"""
+    pass
 
 
