@@ -1,5 +1,8 @@
 """TODO"""
 from ..src import ray_matrix, ray_ds
+from ..src import ray_functions as rf
+
+
 
 def test_matrix_gen4by4():
     """"""
@@ -410,3 +413,221 @@ def test_determinant_4x4():
     assert a.cofactor(0,2) == 210
     assert a.cofactor(0,3) == 51
     assert a.determinant() == -4071
+    
+def test_invertible_true():
+    """Test whether provided matrix is invertible"""
+    a = ray_matrix.Matrix(4,4)
+    a[0,0] = 6
+    a[0,1] = 4
+    a[0,2] = 4
+    a[0,3] = 4
+    a[1,0] = 5
+    a[1,1] = 5
+    a[1,2] = 7
+    a[1,3] = 6
+    a[2,0] = 4
+    a[2,1] = -9
+    a[2,2] = 3
+    a[2,3] = -7
+    a[3,0] = 9
+    a[3,1] = 1
+    a[3,2] = 7
+    a[3,3] = -6
+    
+    assert a.isinvertible()
+    
+def test_invertible_false():
+    """Test whether provided matrix is invertible"""
+    a = ray_matrix.Matrix(4,4)
+    a[0,0] = -4
+    a[0,1] = 2
+    a[0,2] = -2
+    a[0,3] = -3
+    a[1,0] = 9
+    a[1,1] = 6
+    a[1,2] = 2
+    a[1,3] = 6
+    a[2,0] = 0
+    a[2,1] = -5
+    a[2,2] = 1
+    a[2,3] = -5
+    a[3,0] = 0
+    a[3,1] = 0
+    a[3,2] = 0
+    a[3,3] = 0
+    
+    assert a.isinvertible() == False
+
+def test_inverse1():
+    """Test inverse operation on matrix"""
+    a = ray_matrix.Matrix(4,4)
+    a[0,0] = -5
+    a[0,1] = 2
+    a[0,2] = 6
+    a[0,3] = -8
+    a[1,0] = 1
+    a[1,1] = -5
+    a[1,2] = 1
+    a[1,3] = 8
+    a[2,0] = 7
+    a[2,1] = 7
+    a[2,2] = -6
+    a[2,3] = -7
+    a[3,0] = 1
+    a[3,1] = -3
+    a[3,2] = 7
+    a[3,3] = 4
+    
+    b = a.inverse()
+    
+    assert a.determinant() == 532
+    assert a.cofactor(2,3) == -160
+    assert rf.float_equal(b[3,2], -160/532)
+    assert a.cofactor(3,2) == 105
+    assert rf.float_equal(b[2,3], 105/532)
+    
+    t = ray_matrix.Matrix(4,4)
+    t[0,0] = 0.21805
+    t[0,1] = 0.45113
+    t[0,2] = 0.24060
+    t[0,3] = -0.04511
+    t[1,0] = -0.80827
+    t[1,1] = -1.45677
+    t[1,2] = -0.44361
+    t[1,3] = 0.52068
+    t[2,0] = -0.07895
+    t[2,1] = -0.22368
+    t[2,2] = -0.05263
+    t[2,3] = 0.19737
+    t[3,0] = -0.52256
+    t[3,1] = -0.81391
+    t[3,2] = -0.30075
+    t[3,3] = 0.30639
+    
+    assert t == b
+    
+def test_inverse_2():
+    """Test inverse operation on matrix"""
+    a = ray_matrix.Matrix(4,4)
+    a[0,0] = 8
+    a[0,1] = -5
+    a[0,2] = 9
+    a[0,3] = 2
+    a[1,0] = 7
+    a[1,1] = 5
+    a[1,2] = 6
+    a[1,3] = 1
+    a[2,0] = -6
+    a[2,1] = 0
+    a[2,2] = 9
+    a[2,3] = 6
+    a[3,0] = -3
+    a[3,1] = 0
+    a[3,2] = -9
+    a[3,3] = -4
+    
+    b=a.inverse()
+    
+    t = ray_matrix.Matrix(4,4)
+    t[0,0] = -0.15385
+    t[0,1] = -0.15385
+    t[0,2] = -0.28205
+    t[0,3] = -0.53846
+    t[1,0] = -0.07692
+    t[1,1] = 0.12308
+    t[1,2] = 0.02564
+    t[1,3] = 0.03077
+    t[2,0] = 0.35897
+    t[2,1] = 0.35897
+    t[2,2] = 0.43590
+    t[2,3] = 0.92308
+    t[3,0] = -0.69231
+    t[3,1] = -0.69231
+    t[3,2] = -0.76923
+    t[3,3] = -1.92308
+    
+    assert b == t
+    
+def test_inverse_3():
+    """Test inverse operation on matrix"""
+    a = ray_matrix.Matrix(4,4)
+    a[0,0] = 9
+    a[0,1] = 3
+    a[0,2] = 0
+    a[0,3] = 9
+    a[1,0] = -5
+    a[1,1] = -2
+    a[1,2] = -6
+    a[1,3] = -3
+    a[2,0] = -4
+    a[2,1] = 9
+    a[2,2] = 6
+    a[2,3] = 4
+    a[3,0] = -7
+    a[3,1] = 6
+    a[3,2] = 6
+    a[3,3] = 2
+    
+    b=a.inverse()
+    
+    t = ray_matrix.Matrix(4,4)
+    t[0,0] = -0.04074
+    t[0,1] = -0.07778
+    t[0,2] = 0.14444
+    t[0,3] = -0.22222
+    t[1,0] = -0.07778
+    t[1,1] = 0.03333
+    t[1,2] = 0.36667
+    t[1,3] = -0.33333
+    t[2,0] = -0.02901
+    t[2,1] = -0.14630
+    t[2,2] = -0.10926
+    t[2,3] = 0.12963
+    t[3,0] = 0.17778
+    t[3,1] = 0.06667
+    t[3,2] = -0.26667
+    t[3,3] = 0.33333
+    
+    assert b == t
+    
+def test_inverse_multiplication():
+    """Test whether multiplying a product by its inverse returns the original matrix"""
+    a = ray_matrix.Matrix(4,4)
+    a[0,0] = 3
+    a[0,1] = -9
+    a[0,2] = 7
+    a[0,3] = 3
+    a[1,0] = 3
+    a[1,1] = -8
+    a[1,2] = 2
+    a[1,3] = -9
+    a[2,0] = -4
+    a[2,1] = 4
+    a[2,2] = 4
+    a[2,3] = 1
+    a[3,0] = -6
+    a[3,1] = 5
+    a[3,2] = -1
+    a[3,3] = 1
+    
+    b = ray_matrix.Matrix(4,4)
+    b[0,0] = 8
+    b[0,1] = 2
+    b[0,2] = 2
+    b[0,3] = 2
+    b[1,0] = 3
+    b[1,1] = -1
+    b[1,2] = 7
+    b[1,3] = 0
+    b[2,0] = 7
+    b[2,1] = 0
+    b[2,2] = 5
+    b[2,3] = 4
+    b[3,0] = 6
+    b[3,1] = -2
+    b[3,2] = 0
+    b[3,3] = 5
+    
+    c = a * b
+    
+    assert a == c * b.inverse()

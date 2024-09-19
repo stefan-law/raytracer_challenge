@@ -21,8 +21,11 @@ class Matrix:
         m, n = pos
         self.matrix[m][n] = float(value)
     
-    def __eq__(self, matrix) -> bool:
+    def __eq__(self, matrix: object) -> bool:
         """TODO"""
+        if not isinstance(matrix, Matrix):
+            return NotImplemented
+        
         # Check for equal shape
         if self.m != matrix.m or self.n != matrix.n:
             return False
@@ -30,8 +33,10 @@ class Matrix:
         # Check for matching contents
         for m in range(self.m):
             for n in range(self.n):
-                if not rf.float_equal(self[m,n], matrix[m,n]):
-                    return False
+                if not rf.float_equal(self.matrix[m][n], matrix[m,n]):
+                    
+                    raise MatrixError(f"Not matching at m:{m} n:{n}, a={self.matrix[m][n]} b={matrix[m,n]}")
+
         
         return True
     
@@ -69,11 +74,20 @@ class Matrix:
         return out_matrix
     
     def determinant(self) -> float:
-        """Calculates the determinant of a 2x2 matrix"""
-        if self.m != 2 or self.n != 2:
-            raise MatrixError("Must be 2x2 Matrix")
+        """
+        Calculates the determinant of a matrix
+        If a matrix is > 2x2, the call to cofactor will recursively call minor->submatrix->determinant
+        until a 2x2 matrix is reached
+        """
+        if self.m == 2 and self.n == 2:
+            return self.matrix[0][0] * self.matrix[1][1] - self.matrix[0][1] * self.matrix[1][0]
         
-        return self.matrix[0][0] * self.matrix[1][1] - self.matrix[0][1] * self.matrix[1][0]
+        determinant = 0.0
+        for column in range(self.n):
+            determinant += self.matrix[0][column] * self.cofactor(0, column)
+            
+        
+        return determinant
     
     def submatrix(self, row: int, column: int) -> Matrix:
         """Create a submatrix by removing one row and one column at argument indices"""
@@ -107,7 +121,40 @@ class Matrix:
         """
         cof =  self.minor(row, column) if (row + column) % 2 == 0 else -(self.minor(row,column))
         return cof
+    
+    def isinvertible(self) -> bool:
+        """
+        Determine whether this Matrix is invertible
+        If determinant is zero, a matrix is not invertible
+        Returns:
+            bool: _description_
+        """
         
+        if self.determinant() == 0:
+            return False
+        
+        return True
+    
+    def inverse(self) -> Matrix:
+        """_Calculates the inverse of this matrix
+
+        Returns:
+            Matrix: _Inversion of this matrix
+        """
+        
+        if not self.isinvertible():
+            raise MatrixError("Matrix is not invertible")
+        
+        # Construct a matrix of transposed cofactors
+        # Divide each element by the determinant of the matrix
+        transposed_cofactors = Matrix(self.m, self.n)
+        
+        for row in range(self.m):
+            for col in range(self.n):
+                transposed_cofactors[col,row] = self.cofactor(row,col) / self.determinant()
+                
+        return transposed_cofactors
+
         
 
 class MatrixError(Exception):
