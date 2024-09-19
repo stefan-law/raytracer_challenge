@@ -63,3 +63,19 @@ def rotation_z(radians: float) -> rm.Matrix:
     rot_z_matrix[3,3] = 1
     
     return rot_z_matrix
+
+def shear(x_y: float, x_z: float, y_x: float, y_z: float, z_x: float, z_y: float) -> rm.Matrix:
+    """Returns a shearing transformation matrix"""
+    shear_matrix = rm.Matrix(4,4)
+    shear_matrix[0,0] = 1
+    shear_matrix[0,1] = x_y
+    shear_matrix[0,2] = x_z
+    shear_matrix[1,0] = y_x
+    shear_matrix[1,1] = 1
+    shear_matrix[1,2] = y_z
+    shear_matrix[2,0] = z_x
+    shear_matrix[2,1] = z_y
+    shear_matrix[2,2] = 1
+    shear_matrix[3,3] = 1
+    
+    return shear_matrix

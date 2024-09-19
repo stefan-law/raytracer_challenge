@@ -23,3 +23,4 @@ def float_equal(a, b):
 def write_pixel(canvas: list[list[object]], x: int, y: int, color: object) -> None:
     """Writes a pixel to provided canvas at coordinates [x][y]"""
     canvas[x][y] = color
+

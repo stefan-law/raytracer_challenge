@@ -1,7 +1,6 @@
 """TODO"""
 import math
 
-from ..src import ray_matrix, ray_ds
 from ..src import ray_functions as rf
 from ..src import ray_transformations as rt
 
@@ -83,3 +82,67 @@ def test_rotation_z():
     
     assert half_quarter * p == rf.point(-(math.sqrt(2))/2, (math.sqrt(2))/2, 0)
     assert full_quarter * p == rf.point(-1, 0, 0)
+    
+def test_shear1():
+    """Shear x in proportion to y"""
+    transform = rt.shear(1, 0, 0, 0, 0, 0)
+    p = rf.point(2, 3, 4)
+    assert transform * p == rf.point(5, 3, 4)
+    
+def test_shear2():
+    """Shear x in proportion to z"""
+    transform = rt.shear(0, 1, 0, 0, 0, 0)
+    p = rf.point(2, 3, 4)
+
+    assert transform * p == rf.point(6, 3, 4)
+    
+def test_shear3():
+    """Shear y in proportion to x"""
+    transform = rt.shear(0, 0, 1, 0, 0, 0)
+    p = rf.point(2, 3, 4)
+
+    assert transform * p == rf.point(2, 5, 4)
+    
+def test_shear4():
+    """Shear y in proportion to z"""
+    transform = rt.shear(0, 0, 0, 1, 0, 0)
+    p = rf.point(2, 3, 4)
+
+    assert transform * p == rf.point(2, 7, 4)
+
+def test_shear5():
+    """Shear z in proportion to x"""
+    transform = rt.shear(0, 0, 0, 0, 1, 0)
+    p = rf.point(2, 3, 4)
+
+    assert transform * p == rf.point(2, 3, 6)
+    
+def test_shear6():
+    """Shear z in proportion to y"""
+    transform = rt.shear(0, 0, 0, 0, 0, 1)
+    p = rf.point(2, 3, 4)
+
+    assert transform * p == rf.point(2, 3, 7)
+    
+def test_chaining():
+    """Demonstrate transformations applied in sequence"""
+    p = rf.point(1, 0, 1)
+    A = rt.rotation_x(math.pi/2)
+    B = rt.scale(5, 5, 5)
+    C = rt.translation(10, 5, 7)
+    
+    #Rotate
+    p2 = A * p
+    assert p2 == rf.point(1, -1, 0)
+    
+    #Scale
+    p3 = B * p2
+    assert p3 == rf.point(5, -5, 0)
+    
+    #Translate
+    p4 = C * p3
+    assert p4 == rf.point(15, 0, 7)
+    
+    #Chained transformations must be applied in reverse order
+    T = C * B * A
+    assert T * p == rf.point(15, 0, 7)
