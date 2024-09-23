@@ -1,1 +1,5 @@
 /venv
+*.pyc
+/raytracer_challenge/bin
+/raytracer_challenge/lib
+raytracer_challenge/pyvenv.cfg

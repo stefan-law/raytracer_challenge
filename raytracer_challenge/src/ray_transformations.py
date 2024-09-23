@@ -79,3 +79,13 @@ def shear(x_y: float, x_z: float, y_x: float, y_z: float, z_x: float, z_y: float
     shear_matrix[3,3] = 1
     
     return shear_matrix
+
+def identity() -> rm.Matrix:
+    """Returns an identity matrix"""
+    identity_matrix = rm.Matrix(4,4)
+    identity_matrix[0,0] = 1
+    identity_matrix[1,1] = 1
+    identity_matrix[2,2] = 1
+    identity_matrix[3,3] = 1
+    
+    return identity_matrix

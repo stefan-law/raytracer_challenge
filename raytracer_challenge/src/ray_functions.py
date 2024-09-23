@@ -11,6 +11,10 @@ def vector(x:float, y: float, z: float):
     """Helper method to create vectors"""
     return ray_ds.RayTuple(x, y, z, 0.0)
 
+def color(r: float, g: float, b: float):
+    """Helper method to create colors"""
+    return ray_ds.ColorTuple(r, g, b)
+
 def float_equal(a, b):
     """Helper method to compare floats"""
     epsilon = 0.00001
