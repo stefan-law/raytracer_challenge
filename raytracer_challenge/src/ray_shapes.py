@@ -8,6 +8,7 @@ from ..src import ray_functions as rf
 from ..src import ray_ds
 from ..src import ray_transformations as rt
 from ..src import ray_matrix as rm
+from ..src import ray_reflect as rr
 
 
 class Ray:
@@ -28,6 +29,7 @@ class Sphere:
         self.origin = rf.point(0,0,0)
         self.radius = 1.0
         self.transform = rt.identity()
+        self.material = rr.Material()
         
     def set_transform(self, transform: rm.Matrix) -> None:
         """Sets Sphere transform matrix"""
