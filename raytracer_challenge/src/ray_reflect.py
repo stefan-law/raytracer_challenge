@@ -82,7 +82,7 @@ def lighting(material: Material, light: PointLight, point: rf.point, eyev: rf.ve
         reflect_dot_eye = reflectv.dot(eyev)
         
         if reflect_dot_eye <= 0:
-            specular = rf.color(0,  0,0)
+            specular = rf.color(0, 0, 0)
         else:
             # compute the specular contribution
             factor = reflect_dot_eye ** material.shininess
