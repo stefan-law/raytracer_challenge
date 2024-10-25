@@ -3,7 +3,7 @@ Data structures for implementation of a ray tracer
 """
 import math
 
-from . import ray_functions as rf
+import src.ray_functions as rf
 
 
 class RayTuple:

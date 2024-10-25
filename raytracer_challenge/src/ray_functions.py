@@ -1,7 +1,7 @@
 """
 Helper functions for implementation of ray tracer
 """
-from . import ray_ds
+import src.ray_ds as ray_ds
 
 def point(x: float, y: float, z: float):
     """Helper method to create points"""

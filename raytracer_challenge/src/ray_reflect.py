@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from ..src import ray_shapes as rs
-from ..src import ray_functions as rf
-from ..src import ray_ds as rd
+import src.ray_shapes as rs
+import src.ray_functions as rf
+import src.ray_ds as rd
 
 class PointLight:
     """Represents a point light"""
@@ -10,6 +10,12 @@ class PointLight:
     def __init__(self, position: rf.point, intensity: rf.color) -> None:
         self.intensity = intensity
         self.position = position
+        
+    def __eq__(self, light: PointLight) -> bool:
+        if self.intensity != light.intensity or self.position != light.position:
+            return False
+        
+        return True
 
 class Material: 
     """Represents a material"""

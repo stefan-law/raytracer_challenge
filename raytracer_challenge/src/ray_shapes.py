@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import math
 
-from ..src import ray_functions as rf
-from ..src import ray_ds
-from ..src import ray_transformations as rt
-from ..src import ray_matrix as rm
-from ..src import ray_reflect as rr
+import src.ray_functions as rf
+import src.ray_ds as ray_ds
+import src.ray_transformations as rt
+import src.ray_matrix as rm
+import src.ray_reflect as rr
 
 
 class Ray:
@@ -34,6 +34,17 @@ class Sphere:
     def set_transform(self, transform: rm.Matrix) -> None:
         """Sets Sphere transform matrix"""
         self.transform = transform
+        
+    def __eq__(self, sphere: Sphere) -> bool:
+        if not isinstance(sphere, Sphere):
+            return False
+        if (self.origin == sphere.origin and
+                self.radius == sphere.radius and
+                self.transform == sphere.transform and
+                self.material == sphere.material):
+            return True
+
+        return False
         
 class Intersection:
     """Object representing intersection between ray and object"""

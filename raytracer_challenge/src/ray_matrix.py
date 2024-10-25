@@ -2,8 +2,10 @@
 
 from __future__ import annotations #Allows self-referenced type hinting in class methods
 
-from . import ray_functions as rf
-from . import ray_ds as rd
+import math
+
+import src.ray_functions as rf
+import src.ray_ds as rd
 
 
 class Matrix:
@@ -21,7 +23,7 @@ class Matrix:
         m, n = pos
         self.matrix[m][n] = float(value)
     
-    def __eq__(self, matrix: object) -> bool:
+    def __eq__(self, matrix: Matrix) -> bool:
         """TODO"""
         if not isinstance(matrix, Matrix):
             return NotImplemented
@@ -34,9 +36,8 @@ class Matrix:
         for m in range(self.m):
             for n in range(self.n):
                 if not rf.float_equal(self.matrix[m][n], matrix[m,n]):
-                    
-                    raise MatrixError(f"Not matching at m:{m} n:{n}, a={self.matrix[m][n]} b={matrix[m,n]}")
-
+                    #print(f"m:{m}, n:{n}, a:{}")
+                    return False
         
         return True
     
