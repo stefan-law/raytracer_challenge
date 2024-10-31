@@ -1,6 +1,9 @@
 """
 Helper functions for implementation of ray tracer
 """
+
+EPSILON = 0.00001
+
 import src.ray_ds as ray_ds
 
 def point(x: float, y: float, z: float):

@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+import sys
+sys.path.append('raytracer_challenge')
+
 import src.ray_shapes as rs
 import src.ray_functions as rf
 import src.ray_ds as rd
+
 
 class PointLight:
     """Represents a point light"""
@@ -40,25 +44,25 @@ class Material:
             return False
         
         return True
-            
-    
-def normal_at(s: rs.Sphere, world_point: rf.point):
-    """Return the normal vector at point p on Sphere s"""
+
+def normal_at(shape: rs.Shape, point: rf.point) -> rf.vector:
+    """Return the normal vector at point p on shape s"""
     # Return object to origin
-    object_point = s.transform.inverse() * world_point
-    # Calculate normal at origin
-    object_normal = object_point - rf.point(0,0,0)
+    local_point = shape.transform.inverse() * point
+    local_normal = shape.local_normal_at(local_point)
     # Translate normal to world space
-    world_normal = s.transform.inverse().transpose() * object_normal
-    # Do below, otherwise would need to mult by 3x3 submatrix of transform
+    world_normal = shape.transform.inverse().transpose() * local_normal
+        # Do below, otherwise would need to mult by 3x3 submatrix of transform
     world_normal.w = 0
+    
     return world_normal.normal()
+
 
 def reflect(v: rf.vector, n: rf.vector):
     """Reflect a vector v around a normal vector n"""
     return v - n * 2 * (v.dot(n))
 
-def lighting(material: Material, light: PointLight, point: rf.point, eyev: rf.vector, normalv: rf.vector) -> rd.ColorTuple:
+def lighting(material: Material, light: PointLight, point: rf.point, eyev: rf.vector, normalv: rf.vector, in_shadow: bool = False) -> rd.ColorTuple:
     """Calculates lighting intensity using Phong Reflection Model"""
     # combine the surface color with the light's color/intensity
     effective_color = material.color * light.intensity
@@ -68,6 +72,8 @@ def lighting(material: Material, light: PointLight, point: rf.point, eyev: rf.ve
     
     # compute the ambient contribution
     ambient = effective_color * material.ambient
+    if in_shadow:
+        return ambient
     
     # light_dot_normal represents cos theta between light vector and 
     # normal vector. A negative number means the light is on the other
@@ -98,3 +104,4 @@ def lighting(material: Material, light: PointLight, point: rf.point, eyev: rf.ve
     # Add the three contributions together to get the final shading
     total = ambient + diffuse + specular
     return total
+

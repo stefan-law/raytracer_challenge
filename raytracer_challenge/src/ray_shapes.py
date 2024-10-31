@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+import pytest
 
 import src.ray_functions as rf
 import src.ray_ds as ray_ds
@@ -10,6 +11,38 @@ import src.ray_transformations as rt
 import src.ray_matrix as rm
 import src.ray_reflect as rr
 
+class Shape:
+    """
+    Parent class for describing different shapes.
+
+    Returns:
+        Shape Object
+    """
+    def __init__(self):
+        self.transform = rt.identity()
+        self.material = rr.Material()
+        self.saved_ray = None
+        
+    def local_intersect(self, ray: Ray):
+        """
+
+        Args:
+            ray (Ray): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        self.saved_ray = ray
+        
+    def local_normal_at(self, p: rf.point) -> rf.vector:
+        """
+        
+
+        Returns:
+            _type_: _description_
+        """
+        return rf.vector(p.x, p.y, p.z)
+        
 
 class Ray:
     """Object representing a ray"""
@@ -23,13 +56,13 @@ class Ray:
         
         return pos
     
-class Sphere:
+class Sphere(Shape):
     """Object representing a sphere"""
     def __init__(self) -> None:
         self.origin = rf.point(0,0,0)
         self.radius = 1.0
-        self.transform = rt.identity()
-        self.material = rr.Material()
+        super().__init__()
+
         
     def set_transform(self, transform: rm.Matrix) -> None:
         """Sets Sphere transform matrix"""
@@ -45,6 +78,46 @@ class Sphere:
             return True
 
         return False
+    
+    def local_intersect(self, ray: Ray):
+        """Returns a list of t-values for intersections between sphere and ray"""
+        # We transform the ray by the inverse of the sphere's transformation matrix
+        # This allows us to maintain the sphere at origin for calculations
+        ray2 = transform(ray, self.transform.inverse())
+        
+        # x^2 + y^2 + z^2 = R^2 describes a sphere
+        #Calculate the vector between ray origin and sphere origin
+        sphere_to_ray = ray2.origin - rf.point(0,0,0)
+        
+        #Calculate dot product of ray direction
+        # equivalent to it's magnitude^2
+        a = ray2.direction.dot(ray2.direction)
+        
+        #Calculate 2 * dot(ray.direction, sphere_to_ray)
+        # This is 2* projection of ray.direction on sphere_to_ray
+        b = ray2.direction.dot(sphere_to_ray) * 2
+        
+        #Calculate |sphere_to_ray|^2 - 1
+        c = sphere_to_ray.dot(sphere_to_ray) - 1
+        
+        #Determine discriminant of the quadratic function
+        discriminant = b**2 - 4 * a * c
+        
+        if discriminant < 0:
+            return []
+        # If discriminant is zero, there is one solution, else 2
+        t1 = (-b - math.sqrt(discriminant)) / (2*a)
+        t2 = (-b + math.sqrt(discriminant)) / (2*a)
+        
+        return [Intersection(t1, self), Intersection(t2, self)]
+    
+    def local_normal_at(self, local_point: rf.point):
+        """Return the normal vector at point p on Sphere s"""
+
+        # Calculate normal at origin
+        local_normal = local_point - rf.point(0,0,0)
+    
+        return local_normal
         
 class Intersection:
     """Object representing intersection between ray and object"""
@@ -57,39 +130,36 @@ class Intersection:
             return True
         
         return False
+    
+class Plane(Shape):
+    """
+    Object representing a Plane Shape
+    """
+    def __init__(self):
+        super().__init__()
         
+    def local_intersect(self, ray: Ray):
+        # Check for a parallel ray
+        if abs(ray.direction.y) < rf.EPSILON:
+            return None
+        # Calculate intersection of Ray with Plane
+        t = -(ray.origin.y)/ray.direction.y
+        return [Intersection(t, self)]
+    
+    def local_normal_at(self, local_point: rf.point) -> rf.vector:
+        return rf.vector(0,1,0)
 
-def intersect(sphere: Sphere, ray: Ray):
-    """Returns a list of t-values for intersections between sphere and ray"""
-    # We transform the ray by the inverse of the sphere's transformation matrix
-    # This allows us to maintain the sphere at origin for calculations
-    ray2 = transform(ray, sphere.transform.inverse())
+        
+def intersect(shape: Shape, ray: Ray):
+    """
     
-    # x^2 + y^2 + z^2 = R^2 describes a sphere
-    #Calculate the vector between ray origin and sphere origin
-    sphere_to_ray = ray2.origin - rf.point(0,0,0)
-    
-    #Calculate dot product of ray direction
-    # equivalent to it's magnitude^2
-    a = ray2.direction.dot(ray2.direction)
-    
-    #Calculate 2 * dot(ray.direction, sphere_to_ray)
-    # This is 2* projection of ray.direction on sphere_to_ray
-    b = ray2.direction.dot(sphere_to_ray) * 2
-    
-    #Calculate |sphere_to_ray|^2 - 1
-    c = sphere_to_ray.dot(sphere_to_ray) - 1
-    
-    #Determine discriminant of the quadratic function
-    discriminant = b**2 - 4 * a * c
-    
-    if discriminant < 0:
-        return []
-    # If discriminant is zero, there is one solution, else 2
-    t1 = (-b - math.sqrt(discriminant)) / (2*a)
-    t2 = (-b + math.sqrt(discriminant)) / (2*a)
-    
-    return [Intersection(t1, sphere), Intersection(t2, sphere)]
+
+    Args:
+        shape (Shape): _description_
+        ray (Ray): _description_
+    """
+    local_ray = transform(ray, shape.transform.inverse())
+    return shape.local_intersect(local_ray)
 
 def intersections(*intersects: Intersection):
     """Returns a list of intersections"""
@@ -111,7 +181,15 @@ def transform(item: Ray, matrix:rm.Matrix):
     transformed_origin = matrix * item.origin
     transformed_direction = matrix * item.direction
     return Ray(transformed_origin, transformed_direction) 
-    
+
+def set_transform(shape: Shape, transform: rm.Matrix):
+    """Set shape's transformation matrix"""
+    shape.transform = transform
+
+@pytest.mark.skip(reason="not a test")    
+def test_shape():
+    """Creates a test shape"""
+    return Shape()
     
     
     
